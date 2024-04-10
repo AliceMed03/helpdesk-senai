@@ -1,6 +1,7 @@
-package com.helpdesksenai.helpdesksenai.Pessoa;
+package com.helpdesksenai.helpdesksenai.pessoa;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.helpdesksenai.helpdesksenai.enums.PerfilEnum;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -8,9 +9,10 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-public class PessoaEntity implements Serializable {
+public class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -27,7 +29,7 @@ public class PessoaEntity implements Serializable {
     @JsonFormat(pattern ="dd/MM/yyyy")
     protected LocalDate dataCriacao = LocalDate.now();
 
-    public PessoaEntity(Integer id, String nome, String cpf, String email, String senha) {
+    public Pessoa(Integer id, String nome, String cpf, String email, String senha) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -35,7 +37,7 @@ public class PessoaEntity implements Serializable {
         this.senha = senha;
     }
 
-    public PessoaEntity() {
+    public Pessoa() {
     }
 
     public Integer getId() {
@@ -69,11 +71,11 @@ public class PessoaEntity implements Serializable {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-    public Set<Integer> getPerfis() {
-        return perfis;
+    public Set<PerfilEnum> getPerfis() {
+        return perfis.stream().map(perfis -> PerfilEnum.toEnum(perfis)).collect(Collectors.toSet());
     }
-    public void setPerfis(Set<Integer> perfis) {
-        this.perfis = perfis;
+    public void addPerfil(PerfilEnum perfil) {
+        this.perfis.add(perfil.getCodigo());
     }
     public LocalDate getDataCriacao() {
         return dataCriacao;
@@ -86,7 +88,7 @@ public class PessoaEntity implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PessoaEntity that = (PessoaEntity) o;
+        Pessoa that = (Pessoa) o;
         return Objects.equals(id, that.id);
     }
 
