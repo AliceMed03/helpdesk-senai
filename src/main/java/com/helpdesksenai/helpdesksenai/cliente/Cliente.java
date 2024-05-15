@@ -4,19 +4,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.helpdesksenai.helpdesksenai.chamado.Chamado;
 import com.helpdesksenai.helpdesksenai.enums.PerfilEnum;
 import com.helpdesksenai.helpdesksenai.pessoa.Pessoa;
+import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Cliente extends Pessoa {
     private static final long serialVersionUID = 1L;
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     List<Chamado> chamados = new ArrayList<>();
 
-    public Cliente(Integer id, String nome, String cpf, String email, String senha) {
-        super(id, nome, cpf, email, senha);
+    public Cliente(ClienteDTO clienteDTO) {
+        super(clienteDTO.getId(),
+                clienteDTO.getNome(),
+                clienteDTO.getCpf(),
+                clienteDTO.getEmail(),
+                clienteDTO.getSenha());
         addPerfil(PerfilEnum.CLIENTE);
     }
 
