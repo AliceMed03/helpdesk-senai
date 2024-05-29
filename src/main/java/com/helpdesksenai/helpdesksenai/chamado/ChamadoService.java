@@ -1,14 +1,14 @@
 package com.helpdesksenai.helpdesksenai.chamado;
 
 import com.helpdesksenai.helpdesksenai.cliente.Cliente;
-import com.helpdesksenai.helpdesksenai.cliente.ClienteDTO;
 import com.helpdesksenai.helpdesksenai.cliente.ClienteService;
 import com.helpdesksenai.helpdesksenai.enums.PrioridadeEnum;
 import com.helpdesksenai.helpdesksenai.enums.StatusEnum;
+import com.helpdesksenai.helpdesksenai.exceptions.ObjectNotFoundException;
 import com.helpdesksenai.helpdesksenai.tecnico.Tecnico;
+import com.helpdesksenai.helpdesksenai.tecnico.TecnicoDTO;
 import com.helpdesksenai.helpdesksenai.tecnico.TecnicoService;
 import jakarta.validation.Valid;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +18,35 @@ import java.util.Optional;
 
 @Service
 public class ChamadoService {
+    private final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado ";
+    private final String POSSUI_CHAMADO_EM_ABERTO = "A entidade possui chamado em aberto e não pode ser excluído ";
     @Autowired
-    ChamadoRepository repository;
+    private ChamadoRepository repository;
     @Autowired
-    TecnicoService tecnicoService;
+    private TecnicoService tecnicoService;
     @Autowired
-    ClienteService clienteService;
+    private ClienteService clienteService;
 
-    public Chamado findById(Integer id) {
-        Optional<Chamado> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id, obj));
-    };
+
+    public Chamado create(ChamadoDTO objDTO) {
+        objDTO.setId(null);
+        return repository.save(novoChamado(objDTO));
+    }
+
     public List<Chamado> findAll() {
         return repository.findAll();
     }
-    public Chamado create(ChamadoDTO objDTO) {
-        objDTO.setId(null);
-        Chamado newObj = new Chamado(objDTO);
-        return repository.save(newObj);
-    }
-    public Chamado update(Integer id, @Valid ChamadoDTO chamadoDTO) {
-        chamadoDTO.setId(id);
-        Chamado chamado = findById(id);
-        chamado = novoChamado(chamadoDTO);
-        return repository.save(chamado);
+
+    public Chamado findById(Integer id) {
+        Optional<Chamado> obj = repository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO + id));
+    };
+
+    public Chamado update(Integer id, @Valid ChamadoDTO objDTO) {
+        objDTO.setId(id);
+        Chamado oldObj = findById(id);
+        oldObj = novoChamado(objDTO);
+        return repository.save(oldObj);
     }
 
     private Chamado novoChamado(ChamadoDTO chamadoDTO){

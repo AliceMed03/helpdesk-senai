@@ -1,9 +1,9 @@
 package com.helpdesksenai.helpdesksenai.cliente;
 
+import com.helpdesksenai.helpdesksenai.exceptions.ObjectNotFoundException;
 import com.helpdesksenai.helpdesksenai.pessoa.Pessoa;
 import com.helpdesksenai.helpdesksenai.pessoa.PessoaRepository;
 import jakarta.validation.Valid;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -13,18 +13,22 @@ import java.util.Optional;
 
 @Service
 public class ClienteService {
+    private final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado ";
+    private final String POSSUI_CHAMADO_EM_ABERTO = "A entidade possui chamado em aberto e não pode ser excluído ";
+
     @Autowired
     private ClienteRepository repository;
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    public Cliente findById(Integer id) {
-        Optional<Cliente> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id, obj));
-    };
+    //Read (Buscar por id & buscar todos)
     public List<Cliente> findAll() {
         return repository.findAll();
     }
+    public Cliente findById(Integer id) {
+        Optional<Cliente> obj = repository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO + id));
+    };
     public Cliente create(ClienteDTO objDTO) {
         objDTO.setId(null);
         validaPorCpfEEmail(objDTO);
@@ -34,9 +38,6 @@ public class ClienteService {
     public Cliente update(Integer id, @Valid ClienteDTO objDTO) {
         objDTO.setId(id);
         Cliente oldObj = findById(id);
-        if (!objDTO.getSenha().equals(oldObj.getSenha())) {
-            objDTO.setSenha(objDTO.getSenha());
-        }
         validaPorCpfEEmail(objDTO);
         oldObj = new Cliente(objDTO);
         return repository.save(oldObj);
@@ -44,7 +45,7 @@ public class ClienteService {
     public void delete(Integer id) {
         Cliente obj = findById(id);
         if (obj.getChamados().size() > 0) {
-            throw new DataIntegrityViolationException("Cliente possui ordens de serviço e não pode ser deletado!");
+            throw new DataIntegrityViolationException(POSSUI_CHAMADO_EM_ABERTO + id);
         }
         repository.deleteById(id);
     }
