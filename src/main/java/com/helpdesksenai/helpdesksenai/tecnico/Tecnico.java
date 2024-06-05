@@ -24,6 +24,7 @@ public class Tecnico extends Pessoa {
                 tecnicoDTO.getEmail(),
                 tecnicoDTO.getSenha());
         addPerfil(PerfilEnum.CLIENTE);
+        addPerfil(PerfilEnum.TECNICO);
     }
 
     public Tecnico() {
