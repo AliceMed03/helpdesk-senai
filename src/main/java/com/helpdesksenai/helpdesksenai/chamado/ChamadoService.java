@@ -67,8 +67,8 @@ public class ChamadoService {
         //Abaixo popula os demais atributos
         chamado.setTecnico(tecnico);
         chamado.setCliente(cliente);
-        chamado.setPrioridadeEnum(PrioridadeEnum.toEnum(chamadoDTO.getPrioridade()));
-        chamado.setStatusEnum(StatusEnum.toEnum(chamadoDTO.getStatus()));
+        chamado.setPrioridadeEnum(PrioridadeEnum.toEnum(chamadoDTO.getPrioridade().getCodigo()));
+        chamado.setStatusEnum(StatusEnum.toEnum(chamadoDTO.getStatus().getCodigo()));
         chamado.setTitulo(chamadoDTO.getTitulo());
         chamado.setObservacoes(chamadoDTO.getObservacoes());
         return chamado;

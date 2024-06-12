@@ -45,7 +45,7 @@ public class TecnicoService {
     }
     public void delete(Integer id) {
         Tecnico obj = findById(id);
-        if (obj.getChamados().size() > 0) {
+        if (obj.getChamados() != null && obj.getChamados().size() > 0) {
             throw new DataIntegrityViolationException(POSSUI_CHAMADO_EM_ABERTO + id);
         }
         repository.deleteById(id);

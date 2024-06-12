@@ -2,8 +2,8 @@ package com.helpdesksenai.helpdesksenai.enums;
 
 public enum PrioridadeEnum {
     BAIXA(0, "Baixa"),
-    MEDIA(0, "Média"),
-    ALTA(0, "Alta");
+    MEDIA(1, "Média"),
+    ALTA(2, "Alta");
     private Integer codigo;
     private String descricao;
 

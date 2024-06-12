@@ -5,6 +5,7 @@ import com.helpdesksenai.helpdesksenai.chamado.Chamado;
 import com.helpdesksenai.helpdesksenai.enums.PerfilEnum;
 import com.helpdesksenai.helpdesksenai.pessoa.Pessoa;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 public class Tecnico extends Pessoa {
     private static final long serialVersionUID = 1L;
     @JsonIgnore
-    @OneToMany(mappedBy = "tecnico")
+    @OneToMany(mappedBy = "tecnico", fetch = FetchType.EAGER)
     List<Chamado> chamados = new ArrayList<>();
 
     public Tecnico(TecnicoDTO tecnicoDTO) {
